@@ -1,0 +1,21 @@
+# Target directories (compiled code)
+target/
+*.class
+
+# Eclipse specific files and folders
+.settings/
+.project
+.classpath
+.metadata/
+bin/
+
+# Log files
+*.log
+
+# Local Database Files
+*.db
+taskdb.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
