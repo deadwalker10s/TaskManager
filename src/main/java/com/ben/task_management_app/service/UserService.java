@@ -4,6 +4,8 @@
 package com.ben.task_management_app.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.ben.task_management_app.model.User;
@@ -43,5 +45,9 @@ public class UserService {
 			throw new RuntimeException("User not found with Id :" + id);
 		}
 		userRepository.deleteById(id);
+	}
+
+	public Optional<User> getUserByName(String name) {
+		return userRepository.findByUserName(name); // <-- Update this call to match
 	}
 }

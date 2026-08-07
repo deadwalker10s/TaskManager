@@ -22,7 +22,7 @@ import com.ben.task_management_app.service.TaskService;
  * 
  */
 @RestController
-@RequestMapping
+@RequestMapping("/api/tasks")
 @CrossOrigin(originPatterns = "*")
 public class TaskController {
 
@@ -39,7 +39,7 @@ public class TaskController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
+	public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(taskService.getTaskById(id));
 	}
 
@@ -49,7 +49,7 @@ public class TaskController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
+	public ResponseEntity<Void> deleteTask(@PathVariable("id") Integer id) {
 		taskService.deleteTask(id);
 		return ResponseEntity.noContent().build();
 	}

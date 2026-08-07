@@ -16,5 +16,5 @@ import com.ben.task_management_app.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	Optional<User> findByName(String username);
+	Optional<User> findByUserName(String userName);
 }

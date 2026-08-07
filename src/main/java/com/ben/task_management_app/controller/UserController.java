@@ -39,7 +39,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+	public ResponseEntity<User> getUserById(@PathVariable("id") Integer id) {
 		return ResponseEntity.ok(userService.getUserById(id));
 	}
 
@@ -50,7 +50,7 @@ public class UserController {
 
 	// Delete user by ID
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable("id") Integer id) {
 		userService.deleteUser(id);
 		return ResponseEntity.noContent().build();
 	}

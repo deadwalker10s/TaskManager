@@ -23,7 +23,7 @@ import com.ben.task_management_app.service.TaskAlertService;
  * Controller Class for TaskAlert
  */
 @RestController
-@RequestMapping("api/tasks")
+@RequestMapping("api/alerts")
 @CrossOrigin(origins = "*")
 public class TaskAlertController {
 
@@ -40,7 +40,7 @@ public class TaskAlertController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<TaskAlert> getById(@PathVariable Integer id) {
+	public ResponseEntity<TaskAlert> getById(@PathVariable("id") Integer id) {
 		// Just fetch the object directly and wrap it in the ResponseEntity
 		TaskAlert alert = taskAlertService.getAlertById(id);
 		return ResponseEntity.ok(alert);
@@ -52,7 +52,7 @@ public class TaskAlertController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteAlert(@PathVariable Integer id) {
+	public ResponseEntity<Void> deleteAlert(@PathVariable("id") Integer id) {
 		taskAlertService.deleteTaskAlert(id);
 		return ResponseEntity.noContent().build();
 	}

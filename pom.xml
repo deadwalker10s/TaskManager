@@ -24,10 +24,18 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Spring Boot Web Starter for Controllers -->
+		<!-- 1. Web Starter (Required for Controllers, REST endpoints, and
+		Tomcat Server) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+
+		<!-- 2. Thymeleaf Starter (Required for rendering HTML views) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 			<version>3.2.5</version>
 		</dependency>
 
