@@ -6,7 +6,7 @@
 	<groupId>com.ben</groupId>
 	<artifactId>task-management-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>task-management-app</name>
 	<url>http://maven.apache.org</url>
@@ -15,35 +15,33 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+		<spring-boot.version>3.2.5</spring-boot.version>
 	</properties>
-
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.0</version> <!-- match whatever version your other
+		spring-boot-starter-* deps use -->
+		<relativePath />
+	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
 		</dependency>
-		<!-- 1. Web Starter (Required for Controllers, REST endpoints, and
-		Tomcat Server) -->
+		<!-- Web Starter (Controllers, REST endpoints, embedded Tomcat) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>3.2.5</version>
-		</dependency>
-
-		<!-- 2. Thymeleaf Starter (Required for rendering HTML views) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-			<version>3.2.5</version>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
 		<!-- Spring Data JPA for Repositories -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>3.2.5</version>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
 		<!-- H2 In-Memory Database -->
@@ -54,21 +52,47 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Modern Spring Boot Testing Starter -->
+		<!-- JSP support for embedded Tomcat: no "provided" scope,
+		     since nothing external supplies it at runtime -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>10.1.25</version>
+		</dependency>
+
+		<!-- JSTL (Jakarta flavor, matches jakarta.servlet.* / Tomcat 10) -->
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.2.5</version>
+			<version>${spring-boot.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
-	<!-- 5. BUILD PLUGIN: Necessary to package and run your Spring
-		application -->
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
 			</plugin>
 		</plugins>
 	</build>
