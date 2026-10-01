@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,16 +15,23 @@ import jakarta.persistence.Table;
 public class TaskAlert {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int taskAlertId;
+	private Integer taskAlertId;
 	private String taskAlertMessage;
 	private LocalDateTime taskAlertTime;
 
+	@OneToOne
+	@JoinColumn(name = "task_id", nullable = false, unique = true) // actually enforces "one task can only have one
+																	// alert" at the database level.
+	private Task task;
+
+	protected TaskAlert() {
+	}
+
 	// Constructor
-	public TaskAlert(int taskAlertId, String taskAlertMessage, LocalDateTime taskAlertTime) {
-		super();
-		this.taskAlertId = taskAlertId;
+	public TaskAlert(String taskAlertMessage, LocalDateTime taskAlertTime, Task task) {
 		this.taskAlertMessage = taskAlertMessage;
 		this.taskAlertTime = taskAlertTime;
+		this.task = task;
 	}
 
 	public int getTaskAlertId() {
@@ -47,6 +56,14 @@ public class TaskAlert {
 
 	public void setTaskAlertTime(LocalDateTime taskAlertTime) {
 		this.taskAlertTime = taskAlertTime;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
 	@Override

@@ -92,6 +92,13 @@
 	href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
 	integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
 	crossorigin="anonymous" />
+
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.2/css/tabulator_midnight.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.2/js/tabulator.min.js"></script>
+
 </head>
 <!--end::Head-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
@@ -245,21 +252,22 @@
 		<!--begin::App Main-->
 		<!-- Added id="app-main" -->
 		<main class="app-main" id="app-main">
-			<jsp:include page="taskdashboard.jsp" />
-		</main>
-		<!--end::App Main-->
-		<!--begin::Footer-->
-		<footer class="app-footer">
-			<!--begin::To the end-->
-			<div class="float-end d-none d-sm-inline">Anything you want</div>
-			<!--end::To the end-->
-			<!--begin::Copyright-->
-			<strong> Copyright &copy; 2014-2026&nbsp; <a
-				href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-			</strong> All rights reserved.
-			<!--end::Copyright-->
-		</footer>
-		<!--end::Footer-->
+			<main class="app-main" id="app-main">
+				<jsp:include page="taskdashboard.jsp" />
+			</main>
+			<!--end::App Main-->
+			<!--begin::Footer-->
+			<footer class="app-footer">
+				<!--begin::To the end-->
+				<div class="float-end d-none d-sm-inline">Anything you want</div>
+				<!--end::To the end-->
+				<!--begin::Copyright-->
+				<strong> Copyright &copy; 2014-2026&nbsp; <a
+					href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+				</strong> All rights reserved.
+				<!--end::Copyright-->
+			</footer>
+			<!--end::Footer-->
 	</div>
 	<!--end::App Wrapper-->
 	<!--begin::Script-->
@@ -339,12 +347,32 @@
 	<!-- jsvectormap -->
 
 	<script>
+	function loadDashboard(event){
+		event.preventDefault();
+	    
+	    // Hits your combined stats endpoint to retrieve the taskform HTML fragment securely
+	    fetch('${pageContext.request.contextPath}/api/tasks/stats?view=taskdashboard')
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error('Could not load taskform component view framework');
+	            }
+	            return response.text();
+	        })
+	        .then(htmlContent => {
+	        	console.log('no Error');
+	            // Inject the form layout HTML inside your main body frame container
+	            document.querySelector('.app-main').innerHTML = htmlContent;
+	            loadDashboardStats();
+	        })
+	        .catch(error => console.error('Error rendering form view:', error));
+	}
+	
 	//Function 1: Fetch and display the empty Task Form layout view
-	function loadTaskForm(event) {
+function loadTask(event) {
 	    event.preventDefault();
 	    
 	    // Hits your combined stats endpoint to retrieve the taskform HTML fragment securely
-	    fetch('${pageContext.request.contextPath}/api/tasks/stats?view=taskform')
+	    fetch('${pageContext.request.contextPath}/api/tasks/stats?view=tasklist')
 	        .then(response => {
 	            if (!response.ok) {
 	                throw new Error('Could not load taskform component view framework');
@@ -389,7 +417,169 @@
 	    });
 	}
 
+function loadAlertForm(event){
+	event.preventDefault();
+    
+    // Hits your combined stats endpoint to retrieve the taskform HTML fragment securely
+    fetch('${pageContext.request.contextPath}/api/tasks/stats?view=alertlist')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Could not load taskform component view framework');
+            }
+            return response.text();
+        })
+        .then(htmlContent => {
+        	console.log('no Error');
+            // Inject the form layout HTML inside your main body frame container
+            document.querySelector('.app-main').innerHTML = htmlContent;
+        })
+        .catch(error => console.error('Error rendering form view:', error));
+}
 
+function initTaskTable() {
+    var el = document.getElementById("tasks-table");
+    if (!el) return;
+
+    var deleteUrlBase = el.dataset.deleteUrl;
+
+    var table = new Tabulator(el, {
+        ajaxURL: el.dataset.url,
+        layout: "fitColumns",
+        pagination: true,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50, 100],
+        columns: [
+            { title: "#", field: "taskId", width: 70, sorter: "number" },
+            { title: "Title", field: "taskTitle", headerFilter: "input" },
+            { title: "Description", field: "taskDescription", headerFilter: "input" },
+            {
+                title: "Priority", field: "taskPriority", headerFilter: "list",
+                headerFilterParams: {
+                    values: { "": "All", CRITICAL: "Critical", HIGH: "High", MEDIUM: "Medium", LOW: "Low" },
+                    clearable: true
+                },
+                headerFilterFunc: "=",
+                formatter: priorityBadge
+            },
+            {
+                title: "Status", field: "taskStatus", headerFilter: "list",
+                headerFilterParams: {
+                    values: { "": "All", COMPLETED: "Completed", INPROGRESS: "In Progress", PENDING: "Pending", ONHOLD: "On Hold" },
+                    clearable: true
+                },
+                headerFilterFunc: "=",
+                formatter: statusBadge
+            },
+            {
+                title: "Due Date", field: "taskDuedate", sorter: "date",
+                formatter: function (cell) { return cell.getValue() || "—"; }
+            },
+            {
+                title: "Actions", width: 120, hozAlign: "center", headerSort: false,
+                formatter: function () {
+                    return '<button class="btn btn-sm btn-outline-primary me-1 edit-btn"><i class="bi bi-pencil"></i></button>' +
+                           '<button class="btn btn-sm btn-outline-danger delete-btn"><i class="bi bi-trash"></i></button>';
+                },
+                cellClick: function (e, cell) {
+                    var row = cell.getRow().getData();
+
+                    if (e.target.closest(".edit-btn")) {
+                        loadTaskPage(
+                            '${pageContext.request.contextPath}/api/tasks/editform/' + row.taskId,
+                            document.querySelector(".tab-btn.active")
+                        );
+                    }
+
+                    if (e.target.closest(".delete-btn")) {
+                        if (!confirm("Delete task \"" + row.taskTitle + "\"?")) return;
+
+                        fetch(deleteUrlBase + "/" + row.taskId, { method: "DELETE" })
+                            .then(function (response) {
+                                if (!response.ok) throw new Error("Delete failed: HTTP " + response.status);
+                                cell.getRow().delete();
+                            })
+                            .catch(function (err) {
+                                console.error(err);
+                                alert("Could not delete task.");
+                            });
+                    }
+                }
+            }
+        ]
+    });
+
+    // ... existing filter/export/print wiring stays the same
+}
+
+function priorityBadge(cell) {
+    var val = cell.getValue();
+    var colorMap = { CRITICAL: "#B71C1C", HIGH: "#F44336", MEDIUM: "#FFC107", LOW: "#4CAF50" };
+    var bg = colorMap[val] || "#9E9E9E";
+    var textColor = (val === "MEDIUM") ? "#000" : "#fff";
+    return '<span class="badge" style="background-color:' + bg + '; color:' + textColor + ';">' + val + '</span>';
+}
+
+function statusBadge(cell) {
+    var val = cell.getValue();
+    var colorMap = { COMPLETED: "#4CAF50", INPROGRESS: "#2196F3", PENDING: "#FFC107", ONHOLD: "#9E9E9E" };
+    var bg = colorMap[val] || "#9E9E9E";
+    var textColor = (val === "PENDING") ? "#000" : "#fff";
+    return '<span class="badge" style="background-color:' + bg + '; color:' + textColor + ';">' + val + '</span>';
+}
+
+function loadTaskPage(page, tab) {
+
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+
+    tab.classList.add('active');
+
+    const content = document.getElementById('app-main');
+
+    if (!content) {
+        console.error('Element #app-content-header not found');
+        return;
+    }
+
+    content.innerHTML = '<div>Loading...</div>';
+
+    console.log("Loading URL:", page);
+
+    /* fetch('${pageContext.request.contextPath}/api/tasks/stats?view=tasklist')
+        .then(response => { */
+       fetch(page)   // <-- use the passed-in page URL, not a hardcoded one
+            .then(response => {
+            console.log("HTTP status:", response.status);
+            console.log("Response URL:", response.url);
+
+            if (!response.ok) {
+                throw new Error(
+                    'Could not load ' + page +
+                    ' - HTTP ' + response.status
+                );
+            }
+
+            return response.text();
+        })
+        .then(htmlContent => {
+
+            console.log("Page loaded successfully");
+            content.innerHTML = htmlContent;
+            initTaskTable();   // <-- builds the table only if #tasks-table exists in this fragment
+
+        })
+        .catch(error => {
+
+            console.error('Error loading page:', error);
+
+            content.innerHTML =
+                '<div class="error">Unable to load page.</div>';
+        });
+}
+        
+        
+        
 </script>
 </body>
 </html>

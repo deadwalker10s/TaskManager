@@ -39,9 +39,30 @@ public class TaskController {
 		this.taskService = taskService;
 	}
 
-	@GetMapping
-	public ResponseEntity<List<Task>> getAllTasks() {
-		return ResponseEntity.ok(taskService.getAllTasks());
+	/*
+	 * @GetMapping("/lists") public ModelAndView getAllTasks() { ModelAndView
+	 * modelAndView = new ModelAndView("tasklist"); List<Task> tasks =
+	 * taskService.getAllTasks(); modelAndView.addObject("tasks", tasks); return
+	 * modelAndView; }
+	 */
+
+	@GetMapping("/lists")
+	public ModelAndView getTaskListPage() {
+		return new ModelAndView("tasklist");
+	}
+
+	@GetMapping("/json") // raw data for Tabulator
+	@ResponseBody
+	public List<Task> getAllTasksJson() {
+
+		return taskService.getAllTasks();
+	}
+
+	@GetMapping("/addform")
+	public ModelAndView getAddTaskForm() {
+		ModelAndView modelAndView = new ModelAndView("taskform");
+		modelAndView.addObject("task", new Task());
+		return modelAndView;
 	}
 
 	// get Task statistics
@@ -64,7 +85,8 @@ public class TaskController {
 			modelAndView.addObject("completionRate", dataMetrics.get("completionRate"));
 			modelAndView.addObject("inProgressTasks", dataMetrics.get("inProgressTasks"));
 			modelAndView.addObject("onHoldTasks", dataMetrics.get("onHoldTasks"));
-
+			modelAndView.addObject("alert", dataMetrics.get("alert"));
+			modelAndView.addObject("users", dataMetrics.get("users"));
 			return modelAndView;
 		}
 
