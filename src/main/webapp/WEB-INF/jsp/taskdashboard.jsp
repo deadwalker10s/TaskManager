@@ -90,7 +90,7 @@
 			<div class="col-lg-3 col-6">
 				<div class="small-box text-bg-danger">
 					<div class="inner">
-						<h3 id="alerts-count">--</h3>
+						<h3 id="alerts-count">65</h3>
 						<p>Alerts</p>
 					</div>
 					<a href="#" class="small-box-footer link-light">More info <i
@@ -101,7 +101,7 @@
 			<div class="col-lg-3 col-6">
 				<div class="small-box text-bg-info">
 					<div class="inner">
-						<h3 id="active-users-count">--</h3>
+						<h3 id="active-users-count">44</h3>
 						<p>Active Users</p>
 					</div>
 					<a href="#" class="small-box-footer link-dark">More info <i
@@ -146,9 +146,6 @@ function loadDashboardStats() {
             document.getElementById("completion-rate").textContent = data.completionRate;
             document.getElementById("in-progress-count").textContent = data.inProgressTasks;
             document.getElementById("on-hold-count").textContent = data.onHoldTasks;
-            document.getElementById("alerts-count").textContent = data.alert;
-            document.getElementById("active-users-count").textContent = data.users;
-            
         })
         .catch(error => {
             console.error("Failed to load dashboard stats:", error);

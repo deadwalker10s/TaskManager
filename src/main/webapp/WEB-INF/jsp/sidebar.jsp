@@ -31,18 +31,18 @@
 				</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item"><a href="#"
-							onclick="loadDashboard(event);" class="nav-link active"> <i
+							onclick="loadDashboardStats();" class="nav-link active"> <i
 								class="nav-icon bi bi-list-task"></i>
 								<p>Dashboard</p>
 						</a></li>
-						<li class="nav-item"><a href="#"
-							onclick="loadAlertForm(event);" class="nav-link"> <i
+						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-bell"></i>
-								<p>Alert</p>
+								<p>Create Alert</p>
 						</a></li>
-						<li class="nav-item"><a href="#" onclick="loadTask(event);"
-							class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
-								<p>Task</p>
+						<li class="nav-item"><a href="#"
+							onclick="loadTaskForm(event);" class="nav-link"> <i
+								class="nav-icon bi bi-pencil-square"></i>
+								<p>Create Task</p>
 						</a></li>
 					</ul></li>
 

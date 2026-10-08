@@ -2,15 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<div class="task-tabs">
-
-	<a href="#" class="tab-btn"
-		onclick="loadTaskPage('${pageContext.request.contextPath}/api/tasks/lists?view=tasklist', this); return false;">Task
-		List</a> | <a href="#" class="tab-btn active"
-		onclick="loadTaskPage('${pageContext.request.contextPath}/api/tasks/addform?view=taskform', this); return false;">
-		Add Task </a>
-
-</div>
 
 <!--begin::App Content Header-->
 <div class="app-content-header">
@@ -32,7 +23,7 @@
 	</div>
 </div>
 
-<div class="col-md-6  col-md-offset-3">
+<div class="col-md-6">
 	<div class="card card-primary card-outline mb-4">
 		<div class="card-header">
 			<div class="card-title fw-bold">Create Task</div>
