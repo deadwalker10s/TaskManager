@@ -5,12 +5,14 @@ import java.time.LocalDate;
 import com.ben.task_management_app.model.enums.TaskPriority;
 import com.ben.task_management_app.model.enums.TaskStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,7 +31,10 @@ public class Task {
 	@Enumerated(EnumType.STRING)
 	private TaskStatus taskStatus;
 
-	protected Task() {
+	@OneToOne(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private TaskAlert taskAlert;
+
+	public Task() {
 	}
 
 	// Constructor
@@ -100,6 +105,17 @@ public class Task {
 			}
 		} else {
 			this.taskDuedate = null; // clear it if task moves back to inprogress/onhold
+		}
+	}
+
+	public TaskAlert getTaskAlert() {
+		return taskAlert;
+	}
+
+	public void setTaskAlert(TaskAlert taskAlert) {
+		this.taskAlert = taskAlert;
+		if (taskAlert != null) {
+			taskAlert.setTask(this);
 		}
 	}
 

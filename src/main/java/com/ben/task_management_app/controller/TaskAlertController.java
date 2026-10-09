@@ -33,7 +33,7 @@ public class TaskAlertController {
 		this.taskAlertService = taskAlertService;
 	}
 
-	@GetMapping
+	@GetMapping("/lists")
 	public ResponseEntity<List<TaskAlert>> getAllTasks() {
 		return ResponseEntity.ok(taskAlertService.getAllAlerts());
 	}
