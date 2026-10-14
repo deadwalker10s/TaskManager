@@ -41,12 +41,13 @@
 			<div class="card-body">
 				<div class="mb-3">
 					<label for="inputTitle" class="form-label fw-bold">Title</label> <input
-						type="text" class="form-control" id="inputTitle" name="taskTitle" />
+						type="text" class="form-control" id="inputTitle" name="taskTitle"
+						required />
 				</div>
 				<div class="mb-3">
 					<label for="inputDescription" class="form-label fw-bold">Description</label>
 					<input type="text" class="form-control" id="inputDescription"
-						name="taskDescription" />
+						name="taskDescription" required />
 				</div>
 
 				<div class="mb-3">
@@ -76,8 +77,8 @@
 
 				<div class="input-group mb-3">
 					<select class="form-select" id="inputGroupSelect02"
-						name="taskStatus">
-						<option selected disabled>Choose option...</option>
+						name="taskStatus" required>
+						<option value="" selected disabled>Choose option...</option>
 						<option value="COMPLETED">Completed</option>
 						<option value="INPROGRESS">InProgress</option>
 						<option value="ONHOLD">OnHold</option>

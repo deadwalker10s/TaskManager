@@ -5,7 +5,7 @@
 <div class="task-tabs">
 
 	<a href="#" class="tab-btn"
-		onclick="loadTaskPage('loadTaskPage'${pageContext.request.contextPath}/alert/lists', this); return false;">
+		onclick="loadTaskPage('${pageContext.request.contextPath}/alert/lists', this); return false;">
 		Alert List </a> | <a href="#" class="tab-btn active"
 		onclick="loadTaskPage('alertform.jsp', this); return false;"> Add
 		Alert </a> | <a href="#" class="tab-btn"

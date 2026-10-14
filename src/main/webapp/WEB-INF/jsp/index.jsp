@@ -367,7 +367,7 @@
 	        .catch(error => console.error('Error rendering form view:', error));
 	}
 	
-	//Function 1: Fetch and display the empty Task Form layout view
+//Function 1: Fetch and display the empty Task layout view
 function loadTask(event) {
 	    event.preventDefault();
 	    
@@ -383,16 +383,27 @@ function loadTask(event) {
 	        	console.log('no Error');
 	            // Inject the form layout HTML inside your main body frame container
 	            document.querySelector('.app-main').innerHTML = htmlContent;
+				initTaskTable();  // Initialize the Tabulator table after loading the task 
 	        })
 	        .catch(error => console.error('Error rendering form view:', error));
 	}
 
-	
+//Function 2: Handle the form submission via AJAX
+// This function is triggered when the user submits the task creation form
  function submitTaskForm(event) {
 	    event.preventDefault(); // Stop default form submission behavior
 	    const $form = $('#TaskCreationForm');
 	    const $submitBtn = $form.find('button[type="submit"]');
 
+	    const taskTitle = ($form.find('[name="taskTitle"]').val() || '').trim();
+	    const taskDescription = ($form.find('[name="taskDescription"]').val() || '').trim();
+	    const taskPriority = $form.find('[name="taskPriority"]:checked').val();
+	    const taskStatus = $form.find('[name="taskStatus"]').val();
+
+	    if (!taskTitle || !taskDescription || !taskPriority || !taskStatus) {
+	        alert("Please fill in all required fields. Cannot Submit an empty Task Form.");
+	        return;
+	    }
 	    // Disable the submit button to prevent double-clicking
 	    $submitBtn.prop('disabled', true);
 
