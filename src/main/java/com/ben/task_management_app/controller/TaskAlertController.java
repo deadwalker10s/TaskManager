@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.ben.task_management_app.model.Task;
 import com.ben.task_management_app.model.TaskAlert;
 import com.ben.task_management_app.service.TaskAlertService;
 
@@ -33,16 +36,32 @@ public class TaskAlertController {
 		this.taskAlertService = taskAlertService;
 	}
 
+	// listing all the alert
 	@GetMapping("/lists")
-	public ResponseEntity<List<TaskAlert>> getAllTasks() {
-		return ResponseEntity.ok(taskAlertService.getAllAlerts());
+	public ModelAndView getTaskAlertList() {
+		return new ModelAndView("alertlist");
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<TaskAlert> getById(@PathVariable("id") Integer id) {
-		// Just fetch the object directly and wrap it in the ResponseEntity
-		TaskAlert alert = taskAlertService.getAlertById(id);
-		return ResponseEntity.ok(alert);
+	@GetMapping("/json") // raw data for Tabulator
+	@ResponseBody
+	public List<TaskAlert> getAllTasksAlertJson() {
+
+		return taskAlertService.getAllAlerts();
+	}
+
+	@GetMapping("/addform")
+	public ModelAndView getAddTaskForm() {
+		ModelAndView modelAndView = new ModelAndView("alertform");
+		modelAndView.addObject("task", new Task()); // blank object
+		return modelAndView;
+	}
+
+	@GetMapping("/editform/{id}")
+	public ModelAndView editForm(@PathVariable("id") Integer id) {
+		ModelAndView mav = new ModelAndView("alertform");
+		mav.addObject("task", taskAlertService.getAlertById(id));
+		mav.addObject("mode", "edit");
+		return mav;
 	}
 
 	@PostMapping

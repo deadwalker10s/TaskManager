@@ -77,6 +77,19 @@ public class TaskService {
 		return taskRepository.save(task);
 	}
 
+	// update the existing task
+	public Task updateTask(Task task) {
+		Task existing = taskRepository.findById(task.getTaskId())
+				.orElseThrow(() -> new RuntimeException("Task not found: " + task.getTaskId()));
+
+		existing.setTaskTitle(task.getTaskTitle());
+		existing.setTaskDescription(task.getTaskDescription());
+		existing.setTaskPriority(task.getTaskPriority());
+		existing.setTaskStatus(task.getTaskStatus());
+
+		return taskRepository.save(existing);
+	}
+
 	// delete an Task
 	public void deleteTask(Integer id) {
 		if (!taskRepository.existsById(id)) {

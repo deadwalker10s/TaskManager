@@ -404,26 +404,28 @@ function loadTask(event) {
 	        alert("Please fill in all required fields. Cannot Submit an empty Task Form.");
 	        return;
 	    }
-	    // Disable the submit button to prevent double-clicking
-	    $submitBtn.prop('disabled', true);
 
+	    const taskId = $form.find('[name="taskId"]').val();
+	    const isEdit = !!taskId;
+	    const base = '${pageContext.request.contextPath}/api/tasks';
+	    
+	 // Disable the submit button to prevent double-clicking
+	    $submitBtn.prop('disabled', true);
 	    // Serialize all form fields into a URL-encoded text string
 	    const formData = $form.serialize();
 	    console.log("Query String format:", formData); 
 	    $.ajax({
-	        url: '${pageContext.request.contextPath}/api/tasks',
-	        type: 'POST',
-	        data: formData,
-	        success: function(dashboardHtml) {
-	            // Your controller returns the rendered 'taskdashboard' HTML layout.
-	            // Instantly inject it into your main window frame container:
-	            $('.app-main').html(dashboardHtml);
+	        url: isEdit ? base + '/' + taskId : base,
+	        type: isEdit ? 'PUT' : 'POST',
+	        data: $form.serialize(),
+	        success: function () {
+	            // Saved: go back to the task list
+	            loadTaskPage(base + '/lists?view=tasklist', null);
 	        },
-	        error: function(xhr, status, error) {
-	            // Re-enable button on error so user can correct and retry
+	        error: function (xhr, status, error) {
 	            $submitBtn.prop('disabled', false);
 	            console.error("Task submission failed:", error);
-	            alert("Failed to create the task. Please try again.");
+	            alert(isEdit ? "Failed to update the task." : "Failed to create the task.");
 	        }
 	    });
 	}
@@ -447,6 +449,7 @@ function loadAlertForm(event){
         .catch(error => console.error('Error rendering form view:', error));
 }
 
+//initialize the Task table with all the columns 
 function initTaskTable() {
     var el = document.getElementById("tasks-table");
     if (!el) return;
@@ -544,9 +547,11 @@ function loadTaskPage(page, tab) {
         btn.classList.remove('active');
     });
 
-    tab.classList.add('active');
+    if (tab) {
+        tab.classList.add('active');
+    }
 
-    const content = document.getElementById('app-main');
+    const content = document.getElementById('app-main');	
 
     if (!content) {
         console.error('Element #app-content-header not found');
@@ -557,8 +562,6 @@ function loadTaskPage(page, tab) {
 
     console.log("Loading URL:", page);
 
-    /* fetch('${pageContext.request.contextPath}/api/tasks/stats?view=tasklist')
-        .then(response => { */
        fetch(page)   // <-- use the passed-in page URL, not a hardcoded one
             .then(response => {
             console.log("HTTP status:", response.status);
@@ -589,7 +592,56 @@ function loadTaskPage(page, tab) {
         });
 }
         
-        
+function loadAlertPage(page, tab){
+	
+	document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+
+    if (tab) {
+        tab.classList.add('active');
+    }
+
+    const content = document.getElementById('app-main');	
+
+    if (!content) {
+        console.error('Element #app-content-header not found');
+        return;
+    }
+
+    content.innerHTML = '<div>Loading...</div>';
+
+    console.log("Loading URL:", page);
+    fetch(page)   // <-- use the passed-in page URL, not a hardcoded one
+    .then(response => {
+    console.log("HTTP status:", response.status);
+    console.log("Response URL:", response.url);
+
+    if (!response.ok) {
+        throw new Error(
+            'Could not load ' + page +
+            ' - HTTP ' + response.status
+        );
+    }
+
+    return response.text();
+})
+.then(htmlContent => {
+
+    console.log("Page loaded successfully");
+    content.innerHTML = htmlContent;
+    initTaskTable();   // <-- builds the table only if #tasks-table exists in this fragment
+
+})
+.catch(error => {
+
+    console.error('Error loading page:', error);
+
+    content.innerHTML =
+        '<div class="error">Unable to load page.</div>';
+});
+    
+	}    
         
 </script>
 </body>

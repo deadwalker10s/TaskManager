@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,13 +41,7 @@ public class TaskController {
 		this.taskService = taskService;
 	}
 
-	/*
-	 * @GetMapping("/lists") public ModelAndView getAllTasks() { ModelAndView
-	 * modelAndView = new ModelAndView("tasklist"); List<Task> tasks =
-	 * taskService.getAllTasks(); modelAndView.addObject("tasks", tasks); return
-	 * modelAndView; }
-	 */
-
+	// listing all the alerts
 	@GetMapping("/lists")
 	public ModelAndView getTaskListPage() {
 		return new ModelAndView("tasklist");
@@ -61,8 +57,16 @@ public class TaskController {
 	@GetMapping("/addform")
 	public ModelAndView getAddTaskForm() {
 		ModelAndView modelAndView = new ModelAndView("taskform");
-		modelAndView.addObject("task", new Task());
+		modelAndView.addObject("task", new Task()); // blank object
 		return modelAndView;
+	}
+
+	@GetMapping("/editform/{id}")
+	public ModelAndView editForm(@PathVariable("id") Integer id) {
+		ModelAndView mav = new ModelAndView("taskform");
+		mav.addObject("task", taskService.getTaskById(id));
+		mav.addObject("mode", "edit");
+		return mav;
 	}
 
 	// get Task statistics
@@ -120,6 +124,12 @@ public class TaskController {
 		modelAndView.addObject("onHoldCount", dataMetrics.get("onHoldTasks"));
 
 		return modelAndView;
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Task> updateTask(@PathVariable("id") Integer id, @ModelAttribute Task task) {
+		task.setTaskId(id); // use your entity's actual id setter
+		return ResponseEntity.ok(taskService.updateTask(task));
 	}
 
 	@DeleteMapping("/{id}")

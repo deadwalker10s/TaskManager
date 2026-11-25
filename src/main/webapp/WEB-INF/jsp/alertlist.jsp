@@ -3,15 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <div class="task-tabs">
-
 	<a href="#" class="tab-btn"
-		onclick="loadTaskPage('${pageContext.request.contextPath}/alert/lists', this); return false;">
-		Alert List </a> | <a href="#" class="tab-btn active"
-		onclick="loadTaskPage('alertform.jsp', this); return false;"> Add
-		Alert </a> | <a href="#" class="tab-btn"
-		onclick="loadTaskPage('alertedit.jsp', this); return false;"> Edit
-		Alert </a>
-
+		onclick="loadAlertPage('${pageContext.request.contextPath}/api/alerts/lists?view=alertlist', this); return false;">Alert
+		List</a> | <a href="#" class="tab-btn ${isEdit ? '' : 'active'}"
+		onclick="loadAlertPage('${pageContext.request.contextPath}/api/alerts/addform?view=alertform', this); return false;">Add
+		Alert</a>
+	<c:if test="${isEdit}">
+		| <a href="#" class="tab-btn active" onclick="return false;">Edit
+			Task</a>
+	</c:if>
 </div>
 
 <div class="app-content">
